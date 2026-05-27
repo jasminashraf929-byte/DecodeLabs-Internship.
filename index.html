@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="DigitalCraft – Responsive Frontend Interface. DecodeLabs Full Stack Internship Project 1, Batch 2026." />
-  <title>DigitalCraft | Build the Future</title>
+  <meta name="description" content="DigitalCraft – Database Integration. DecodeLabs Full Stack Internship Project 3, Batch 2026." />
+  <title>DigitalCraft | Project 3 — Database Integration</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <style>
 
     /* =====================
@@ -25,6 +25,9 @@
       --text-mid:    #5a4a3a;
       --text-light:  #8a7a6a;
       --white:       #ffffff;
+      --green:       #4caf50;
+      --red:         #e53935;
+      --amber:       #f59e0b;
       --nav-h:       64px;
       --radius:      12px;
       --shadow:      0 4px 24px rgba(44,35,25,0.10);
@@ -32,6 +35,7 @@
       --ease:        0.3s cubic-bezier(0.4,0,0.2,1);
       --ff-head:     'Montserrat', sans-serif;
       --ff-body:     'Roboto', sans-serif;
+      --ff-mono:     'JetBrains Mono', monospace;
     }
 
     /* =====================
@@ -54,14 +58,10 @@
        SKIP LINK
     ===================== */
     .skip-link {
-      position: absolute;
-      top: -999px; left: 0;
-      background: var(--mocha);
-      color: var(--white);
-      padding: 8px 16px;
-      font-family: var(--ff-head);
-      font-size: 0.875rem;
-      z-index: 9999;
+      position: absolute; top: -999px; left: 0;
+      background: var(--mocha); color: var(--white);
+      padding: 8px 16px; font-family: var(--ff-head);
+      font-size: 0.875rem; z-index: 9999;
     }
     .skip-link:focus { top: 0; }
 
@@ -69,154 +69,84 @@
        HEADER
     ===================== */
     header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--nav-h);
-      background: var(--grey);
-      border-bottom: 1px solid var(--grey-dark);
-      z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h); background: var(--grey);
+      border-bottom: 1px solid var(--grey-dark); z-index: 100;
     }
     header.scrolled { box-shadow: var(--shadow); }
-
     nav {
-      max-width: 1200px;
-      margin: 0 auto;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      max-width: 1200px; margin: 0 auto; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
       padding: 0 24px;
     }
-
     .logo {
-      font-family: var(--ff-head);
-      font-weight: 800;
-      font-size: 1.2rem;
-      color: var(--mocha-dark);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-family: var(--ff-head); font-weight: 800; font-size: 1.2rem;
+      color: var(--mocha-dark); display: flex; align-items: center; gap: 8px;
     }
-    .logo-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--mocha);
-      display: inline-block;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
+    .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mocha); display: inline-block; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
     .nav-links a {
-      font-family: var(--ff-head);
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-mid);
-      transition: color var(--ease);
+      font-family: var(--ff-head); font-size: 0.875rem; font-weight: 600;
+      color: var(--text-mid); transition: color var(--ease);
     }
     .nav-links a:hover { color: var(--mocha-dark); }
-
     .nav-cta {
-      background: var(--mocha);
-      color: var(--white) !important;
-      padding: 8px 20px;
-      border-radius: 100px;
-      transition: background var(--ease) !important;
+      background: var(--mocha); color: var(--white) !important;
+      padding: 8px 20px; border-radius: 100px; transition: background var(--ease) !important;
     }
     .nav-cta:hover { background: var(--mocha-dark) !important; }
 
     /* hamburger */
     .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
     }
     .hamburger span {
-      display: block;
-      width: 24px; height: 2px;
-      background: var(--text-dark);
-      border-radius: 2px;
+      display: block; width: 24px; height: 2px;
+      background: var(--text-dark); border-radius: 2px;
       transition: transform var(--ease), opacity var(--ease);
     }
     .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity: 0; }
     .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* mobile drawer */
     .mobile-nav {
-      display: none;
-      position: fixed;
-      top: var(--nav-h); left: 0; right: 0;
-      background: var(--grey);
-      border-bottom: 1px solid var(--grey-dark);
-      box-shadow: var(--shadow);
-      padding: 20px 24px;
-      flex-direction: column;
-      gap: 16px;
-      z-index: 99;
+      display: none; position: fixed; top: var(--nav-h); left: 0; right: 0;
+      background: var(--grey); border-bottom: 1px solid var(--grey-dark);
+      box-shadow: var(--shadow); padding: 20px 24px;
+      flex-direction: column; gap: 16px; z-index: 99;
     }
     .mobile-nav.open { display: flex; }
     .mobile-nav a {
-      font-family: var(--ff-head);
-      font-weight: 600;
-      color: var(--text-mid);
-      padding: 8px 0;
-      border-bottom: 1px solid var(--grey-dark);
+      font-family: var(--ff-head); font-weight: 600; color: var(--text-mid);
+      padding: 8px 0; border-bottom: 1px solid var(--grey-dark);
     }
     .mobile-nav a:last-child { border-bottom: none; }
 
     /* =====================
-       LAYOUT WRAPPER
+       LAYOUT
     ===================== */
     main { padding-top: var(--nav-h); }
-
-    .wrap {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
     /* =====================
        BUTTONS
     ===================== */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: var(--ff-head);
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 13px 26px;
-      border-radius: 100px;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: all var(--ease);
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--ff-head); font-weight: 600; font-size: 0.9rem;
+      padding: 13px 26px; border-radius: 100px;
+      border: 2px solid transparent; cursor: pointer; transition: all var(--ease);
     }
-    .btn-primary {
-      background: var(--mocha);
-      color: var(--white);
-      border-color: var(--mocha);
-    }
+    .btn-primary { background: var(--mocha); color: var(--white); border-color: var(--mocha); }
     .btn-primary:hover {
-      background: var(--mocha-dark);
-      border-color: var(--mocha-dark);
+      background: var(--mocha-dark); border-color: var(--mocha-dark);
       box-shadow: 0 6px 20px rgba(165,133,110,0.35);
     }
-    .btn-outline {
-      background: transparent;
-      color: var(--mocha-dark);
-      border-color: var(--mocha);
-    }
-    .btn-outline:hover {
-      background: var(--mocha);
-      color: var(--white);
-    }
+    .btn-outline { background: transparent; color: var(--mocha-dark); border-color: var(--mocha); }
+    .btn-outline:hover { background: var(--mocha); color: var(--white); }
+    .btn-danger { background: transparent; color: var(--red); border-color: var(--red); font-size: 0.8rem; padding: 6px 14px; }
+    .btn-danger:hover { background: var(--red); color: var(--white); }
     .btn svg { width: 18px; height: 18px; }
 
     /* =====================
@@ -224,28 +154,16 @@
     ===================== */
     .section { padding: 80px 0; }
     .section-tag {
-      font-family: var(--ff-head);
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--mocha);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 10px;
+      font-family: var(--ff-head); font-size: 0.72rem; font-weight: 600;
+      color: var(--mocha); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
     }
     .section-title {
-      font-family: var(--ff-head);
-      font-weight: 800;
-      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-      color: var(--text-dark);
-      line-height: 1.2;
-      margin-bottom: 14px;
+      font-family: var(--ff-head); font-weight: 800; font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      color: var(--text-dark); line-height: 1.2; margin-bottom: 14px;
     }
     .section-sub {
-      font-size: 1rem;
-      color: var(--text-mid);
-      font-weight: 300;
-      max-width: 540px;
-      line-height: 1.8;
+      font-size: 1rem; color: var(--text-mid); font-weight: 300;
+      max-width: 540px; line-height: 1.8;
     }
     .section-head { margin-bottom: 48px; }
 
@@ -254,37 +172,21 @@
     ===================== */
     .hero {
       background: linear-gradient(135deg, var(--grey) 0%, var(--blue-light) 55%, var(--grey) 100%);
-      padding: 64px 0;
-      min-height: calc(100vh - var(--nav-h));
-      display: flex;
-      align-items: center;
+      padding: 64px 0; min-height: calc(100vh - var(--nav-h));
+      display: flex; align-items: center;
     }
     .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 48px;
-      align-items: center;
+      display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center;
     }
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(165,133,110,0.12);
-      border: 1px solid rgba(165,133,110,0.28);
-      color: var(--mocha-dark);
-      font-family: var(--ff-head);
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 100px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 18px;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(165,133,110,0.12); border: 1px solid rgba(165,133,110,0.28);
+      color: var(--mocha-dark); font-family: var(--ff-head); font-size: 0.72rem;
+      font-weight: 600; padding: 6px 14px; border-radius: 100px;
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 18px;
     }
     .badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--mocha);
+      width: 6px; height: 6px; border-radius: 50%; background: var(--mocha);
       animation: pulse 2s ease-in-out infinite;
     }
     @keyframes pulse {
@@ -292,937 +194,969 @@
       50% { opacity:0.5; transform:scale(1.4); }
     }
     .hero-title {
-      font-family: var(--ff-head);
-      font-weight: 800;
-      font-size: clamp(2.2rem, 6vw, 4rem);
-      line-height: 1.12;
-      color: var(--text-dark);
-      margin-bottom: 18px;
+      font-family: var(--ff-head); font-weight: 800;
+      font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1.12;
+      color: var(--text-dark); margin-bottom: 18px;
     }
     .hero-title span { color: var(--mocha); }
     .hero-desc {
-      font-size: clamp(1rem, 2vw, 1.15rem);
-      color: var(--text-mid);
-      font-weight: 300;
-      max-width: 500px;
-      line-height: 1.8;
-      margin-bottom: 32px;
+      font-size: clamp(1rem, 2vw, 1.15rem); color: var(--text-mid);
+      font-weight: 300; max-width: 500px; line-height: 1.8; margin-bottom: 32px;
     }
     .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .project-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(160,212,224,0.3); border: 1px solid rgba(160,212,224,0.6);
+      color: var(--text-mid); font-family: var(--ff-mono); font-size: 0.7rem;
+      font-weight: 600; padding: 5px 12px; border-radius: 6px; margin-bottom: 10px;
+    }
 
-    /* hero card */
+    /* hero card — db terminal style */
     .hero-card {
-      background: var(--white);
-      border-radius: 20px;
-      box-shadow: var(--shadow-lg);
-      padding: 28px;
-      max-width: 420px;
-      width: 100%;
-      margin: 0 auto;
+      background: #1e1a16; border-radius: 20px;
+      box-shadow: var(--shadow-lg); padding: 28px;
+      max-width: 460px; width: 100%; margin: 0 auto;
     }
     .card-titlebar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 6px; margin-bottom: 20px;
     }
     .card-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .card-bar {
-      flex: 1;
-      height: 8px;
-      background: var(--grey-dark);
-      border-radius: 4px;
-      overflow: hidden;
+    .card-title-text {
+      font-family: var(--ff-mono); font-size: 0.75rem; color: #a0856e;
+      margin-left: 8px; letter-spacing: 0.05em;
     }
-    .card-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--mocha-light), var(--blue));
-      border-radius: 4px;
-      width: 0;
-      transition: width 1.2s ease;
+    .terminal-line {
+      font-family: var(--ff-mono); font-size: 0.78rem; line-height: 1.9;
     }
-    .stat-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+    .t-prompt { color: #4caf50; }
+    .t-cmd { color: #a0d4e0; }
+    .t-str { color: #c9a98c; }
+    .t-kw { color: #e8b4b8; }
+    .t-cmt { color: #6a5a4a; }
+    .t-out { color: #8a9a7a; }
+    .t-cursor {
+      display: inline-block; width: 8px; height: 14px;
+      background: #4caf50; vertical-align: middle;
+      animation: blink 1.1s step-end infinite; margin-left: 2px;
     }
-    .stat-box {
-      background: var(--grey);
-      border-radius: var(--radius);
-      padding: 16px;
-      text-align: center;
-    }
-    .stat-num {
-      font-family: var(--ff-head);
-      font-weight: 800;
-      font-size: 1.6rem;
-      color: var(--mocha-dark);
-      display: block;
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 0.72rem;
-      color: var(--text-light);
-      margin-top: 4px;
-      display: block;
-    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
 
     /* =====================
-       FEATURES
+       SCHEMA SECTION
     ===================== */
-    .features-bg { background: var(--white); }
-    .features-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
+    .schema-bg { background: var(--white); }
+    .schema-grid {
+      display: grid; grid-template-columns: 1fr; gap: 24px;
     }
-    .feat-card {
-      background: var(--grey);
-      border-radius: 16px;
-      padding: 28px;
-      border: 1px solid var(--grey-dark);
-      transition: transform var(--ease), box-shadow var(--ease);
+    .schema-table {
+      border: 1px solid var(--grey-dark); border-radius: 16px; overflow: hidden;
     }
-    .feat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-    .feat-icon {
-      width: 50px; height: 50px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem;
-      margin-bottom: 16px;
+    .schema-table-head {
+      background: var(--mocha); color: var(--white);
+      padding: 14px 20px; display: flex; align-items: center; gap: 10px;
     }
-    .icon-mocha { background: rgba(165,133,110,0.15); }
-    .icon-blue  { background: rgba(160,212,224,0.25); }
-    .icon-grey  { background: rgba(200,196,188,0.40); }
-    .feat-title {
-      font-family: var(--ff-head);
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--text-dark);
-      margin-bottom: 8px;
+    .schema-table-name {
+      font-family: var(--ff-mono); font-weight: 600; font-size: 0.9rem;
     }
-    .feat-text {
-      font-size: 0.9rem;
-      color: var(--text-mid);
-      line-height: 1.75;
+    .schema-table-icon { font-size: 1rem; }
+    .schema-fields { padding: 0; }
+    .schema-field {
+      display: grid; grid-template-columns: 2fr 1.5fr 1fr;
+      gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--grey-dark);
+      align-items: center; font-size: 0.85rem;
     }
+    .schema-field:last-child { border-bottom: none; }
+    .schema-field:nth-child(even) { background: var(--grey); }
+    .field-name { font-family: var(--ff-mono); color: var(--text-dark); font-weight: 600; }
+    .field-type { font-family: var(--ff-mono); color: var(--mocha); font-size: 0.78rem; }
+    .field-constraint {
+      font-size: 0.7rem; font-weight: 600; padding: 2px 8px;
+      border-radius: 4px; text-align: center; font-family: var(--ff-mono);
+    }
+    .c-pk   { background: rgba(245,158,11,0.15); color: #d97706; }
+    .c-nn   { background: rgba(76,175,80,0.12);  color: #388e3c; }
+    .c-uq   { background: rgba(160,212,224,0.3); color: #0e7490; }
+    .c-opt  { background: rgba(200,196,188,0.5); color: var(--text-light); }
+    .c-chk  { background: rgba(165,133,110,0.15); color: var(--mocha-dark); }
 
     /* =====================
-       PORTFOLIO
+       DATABASE DASHBOARD
     ===================== */
-    .portfolio-bg { background: var(--grey); }
-    .cards-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
+    .dashboard-bg { background: var(--grey); }
+    .db-stats-row {
+      display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px;
     }
-    .proj-card {
-      background: var(--white);
-      border-radius: 16px;
-      overflow: hidden;
+    .db-stat-card {
+      background: var(--white); border-radius: 16px; padding: 24px 28px;
+      border: 1px solid var(--grey-dark); display: flex; align-items: center; gap: 20px;
       box-shadow: var(--shadow);
-      transition: transform var(--ease), box-shadow var(--ease);
-      display: flex;
-      flex-direction: column;
     }
-    .proj-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-    .proj-thumb {
-      height: 170px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.8rem;
+    .db-stat-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
     }
-    .t1 { background: linear-gradient(135deg,#d4b8a0,var(--mocha-light)); }
-    .t2 { background: linear-gradient(135deg,var(--blue-light),var(--blue)); }
-    .t3 { background: linear-gradient(135deg,var(--grey-dark),var(--grey)); }
-    .t4 { background: linear-gradient(135deg,var(--blue),#7fc9db); }
-    .t5 { background: linear-gradient(135deg,#e8d5c0,var(--mocha-light)); }
-    .t6 { background: linear-gradient(135deg,var(--grey),#c8c4bc); }
-    .proj-body { padding: 22px; flex: 1; display: flex; flex-direction: column; }
-    .proj-tag {
-      font-family: var(--ff-head);
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: var(--mocha);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 7px;
+    .icon-green  { background: rgba(76,175,80,0.12); }
+    .icon-mocha  { background: rgba(165,133,110,0.15); }
+    .icon-blue   { background: rgba(160,212,224,0.3); }
+    .db-stat-num {
+      font-family: var(--ff-head); font-weight: 800; font-size: 2rem;
+      color: var(--mocha-dark); line-height: 1;
     }
-    .proj-title {
-      font-family: var(--ff-head);
-      font-weight: 700;
-      font-size: 0.98rem;
-      color: var(--text-dark);
-      margin-bottom: 8px;
-      line-height: 1.4;
+    .db-stat-label { font-size: 0.8rem; color: var(--text-light); margin-top: 4px; }
+
+    /* messages table */
+    .messages-panel {
+      background: var(--white); border-radius: 16px;
+      border: 1px solid var(--grey-dark); overflow: hidden; box-shadow: var(--shadow);
     }
-    .proj-excerpt {
-      font-size: 0.87rem;
-      color: var(--text-mid);
-      line-height: 1.7;
-      flex: 1;
+    .panel-header {
+      padding: 18px 24px; border-bottom: 1px solid var(--grey-dark);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
     }
-    .proj-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 18px;
-      padding-top: 14px;
-      border-top: 1px solid var(--grey-dark);
+    .panel-title {
+      font-family: var(--ff-head); font-weight: 700; font-size: 1rem;
+      color: var(--text-dark); display: flex; align-items: center; gap: 8px;
     }
-    .proj-meta { font-size: 0.76rem; color: var(--text-light); }
-    .proj-link {
-      font-family: var(--ff-head);
-      font-size: 0.76rem;
-      font-weight: 600;
-      color: var(--mocha);
+    .db-badge {
+      font-family: var(--ff-mono); font-size: 0.65rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 4px;
+      background: rgba(76,175,80,0.12); color: #388e3c;
     }
-    .proj-link:hover { color: var(--mocha-dark); }
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%; border-collapse: collapse; font-size: 0.85rem;
+    }
+    thead th {
+      font-family: var(--ff-head); font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-light); padding: 12px 16px;
+      background: var(--grey); border-bottom: 1px solid var(--grey-dark);
+      text-align: left; white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--grey-dark); transition: background var(--ease); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(165,133,110,0.04); }
+    tbody td { padding: 14px 16px; vertical-align: middle; }
+    .td-id { font-family: var(--ff-mono); font-size: 0.72rem; color: var(--text-light); max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .td-name { font-weight: 500; }
+    .td-email { color: var(--text-mid); font-size: 0.82rem; }
+    .td-subject {
+      font-family: var(--ff-mono); font-size: 0.72rem; padding: 3px 8px;
+      background: rgba(160,212,224,0.25); color: var(--text-mid);
+      border-radius: 4px; display: inline-block;
+    }
+    .td-date { font-size: 0.78rem; color: var(--text-light); white-space: nowrap; }
+    .td-actions { display: flex; gap: 6px; }
+    .empty-state {
+      padding: 60px 24px; text-align: center;
+    }
+    .empty-state-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .empty-state-text { color: var(--text-light); font-size: 0.9rem; }
+    .loading-state { padding: 40px; text-align: center; color: var(--text-light); font-style: italic; }
 
     /* =====================
-       STATS
-    ===================== */
-    .stats-bg { background: var(--mocha-dark); }
-    .stats-title {
-      font-family: var(--ff-head);
-      font-weight: 800;
-      font-size: clamp(1.6rem,3vw,2.2rem);
-      color: var(--white);
-      text-align: center;
-      margin-bottom: 48px;
-    }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 28px;
-      text-align: center;
-    }
-    .s-num {
-      font-family: var(--ff-head);
-      font-weight: 800;
-      font-size: clamp(2rem,5vw,3rem);
-      color: var(--mocha-light);
-      display: block;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .s-label {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.65);
-    }
-
-    /* =====================
-       CONTACT
+       CONTACT SECTION
     ===================== */
     .contact-bg { background: var(--white); }
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 48px;
-    }
-    .info-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      margin-bottom: 22px;
-    }
+    .contact-grid { display: grid; grid-template-columns: 1fr; gap: 48px; }
+    .info-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 22px; }
     .info-icon {
-      width: 42px; height: 42px;
-      border-radius: 10px;
-      background: rgba(165,133,110,0.12);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
+      width: 42px; height: 42px; border-radius: 10px;
+      background: rgba(165,133,110,0.12); display: flex;
+      align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
     }
-    .info-title {
-      font-family: var(--ff-head);
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-light);
-      margin-bottom: 3px;
-    }
-    .info-val { font-size: 0.93rem; color: var(--text-dark); }
+    .info-title { font-family: var(--ff-head); font-weight: 700; font-size: 0.85rem; color: var(--text-dark); }
+    .info-val { font-size: 0.9rem; color: var(--text-mid); margin-top: 2px; }
 
     /* form */
     .form { display: flex; flex-direction: column; gap: 18px; }
-    .form-row { display: grid; grid-template-columns: 1fr; gap: 14px; }
-    .form-group { display: flex; flex-direction: column; gap: 5px; }
-    .form-label {
-      font-family: var(--ff-head);
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-mid);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+    .form-row { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-family: var(--ff-head); font-size: 0.8rem; font-weight: 600; color: var(--text-dark); }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 12px 16px; border-radius: var(--radius);
+      border: 1.5px solid var(--grey-dark); background: var(--grey);
+      font-family: var(--ff-body); font-size: 0.9rem; color: var(--text-dark);
+      transition: border-color var(--ease), box-shadow var(--ease); outline: none;
     }
-    .form-input, .form-textarea, .form-select {
-      font-family: var(--ff-body);
-      font-size: 0.93rem;
-      color: var(--text-dark);
-      background: var(--grey);
-      border: 1.5px solid var(--grey-dark);
-      border-radius: var(--radius);
-      padding: 11px 14px;
-      outline: none;
-      width: 100%;
-      transition: border-color var(--ease), box-shadow var(--ease);
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--mocha); box-shadow: 0 0 0 3px rgba(165,133,110,0.12);
     }
-    .form-input:focus, .form-textarea:focus, .form-select:focus {
-      border-color: var(--mocha);
-      box-shadow: 0 0 0 3px rgba(165,133,110,0.14);
-    }
-    .form-textarea { resize: vertical; min-height: 110px; }
+    .form-textarea { min-height: 130px; resize: vertical; }
+    .form-input.error { border-color: var(--red); }
 
-    /* toast */
-    .toast {
-      position: fixed;
-      bottom: 24px; right: 24px;
-      background: var(--text-dark);
-      color: var(--white);
-      font-family: var(--ff-head);
-      font-size: 0.875rem;
-      font-weight: 600;
-      padding: 13px 22px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all var(--ease);
-      z-index: 9999;
-      pointer-events: none;
+    /* =====================
+       STATS COUNTER SECTION
+    ===================== */
+    .stats-bg { background: linear-gradient(135deg, var(--mocha-dark) 0%, #5a4030 100%); }
+    .stats-title {
+      font-family: var(--ff-head); font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.2rem);
+      color: var(--white); text-align: center; margin-bottom: 40px;
     }
-    .toast.show { opacity: 1; transform: translateY(0); }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; text-align: center;
+    }
+    .s-num {
+      display: block; font-family: var(--ff-head); font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3rem); color: var(--mocha-light); line-height: 1;
+    }
+    .s-label { display: block; font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 6px; }
 
     /* =====================
        FOOTER
     ===================== */
-    footer {
-      background: var(--text-dark);
-      color: rgba(255,255,255,0.55);
-      padding: 48px 0 24px;
-    }
+    footer { background: var(--text-dark); color: var(--grey); padding: 48px 0 24px; }
     .footer-top {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 36px;
-      padding-bottom: 36px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      margin-bottom: 24px;
+      display: grid; grid-template-columns: 1fr; gap: 32px;
+      padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .footer-brand-name {
-      font-family: var(--ff-head);
-      font-weight: 800;
-      font-size: 1.3rem;
-      color: var(--white);
-      margin-bottom: 10px;
+      font-family: var(--ff-head); font-weight: 800; font-size: 1.2rem;
+      color: var(--white); margin-bottom: 8px;
     }
-    .footer-brand-desc { font-size: 0.88rem; line-height: 1.7; max-width: 280px; }
+    .footer-brand-desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.6; max-width: 280px; }
     .footer-col-title {
-      font-family: var(--ff-head);
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--white);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 14px;
+      font-family: var(--ff-head); font-weight: 700; font-size: 0.8rem;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--mocha-light); margin-bottom: 14px;
     }
-    .footer-col ul { display: flex; flex-direction: column; gap: 9px; }
-    .footer-col a { font-size: 0.86rem; color: rgba(255,255,255,0.5); transition: color var(--ease); }
+    .footer-col ul { display: flex; flex-direction: column; gap: 8px; }
+    .footer-col a { font-size: 0.85rem; color: rgba(255,255,255,0.55); transition: color var(--ease); }
     .footer-col a:hover { color: var(--mocha-light); }
     .footer-bottom {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      align-items: center;
-      text-align: center;
-      font-size: 0.78rem;
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 24px; font-size: 0.78rem; color: rgba(255,255,255,0.35);
+      flex-wrap: wrap; gap: 8px;
     }
 
-    /* scroll-top */
+    /* =====================
+       SCROLL TOP
+    ===================== */
     .scroll-top {
-      position: fixed;
-      bottom: 28px; right: 28px;
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: var(--mocha);
-      color: var(--white);
-      border: none;
-      cursor: pointer;
+      position: fixed; bottom: 28px; right: 24px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--mocha); color: var(--white); border: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: var(--shadow);
-      opacity: 0;
-      pointer-events: none;
-      transition: all var(--ease);
-      z-index: 200;
+      box-shadow: var(--shadow-lg); opacity: 0; visibility: hidden;
+      transition: all var(--ease); z-index: 50;
     }
-    .scroll-top.visible { opacity: 1; pointer-events: auto; }
+    .scroll-top.visible { opacity: 1; visibility: visible; }
     .scroll-top:hover { background: var(--mocha-dark); }
     .scroll-top svg { width: 20px; height: 20px; }
 
     /* =====================
-       TABLET  768px
+       TOAST
     ===================== */
+    .toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--text-dark); color: var(--white); padding: 12px 24px;
+      border-radius: 100px; font-size: 0.875rem; font-family: var(--ff-head);
+      font-weight: 600; opacity: 0; pointer-events: none;
+      transition: all var(--ease); z-index: 200; white-space: nowrap; max-width: 90vw;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* =====================
+       MODAL
+    ===================== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(44,35,25,0.5); backdrop-filter: blur(4px);
+      z-index: 300; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white); border-radius: 20px; padding: 32px;
+      max-width: 500px; width: 100%; box-shadow: var(--shadow-lg);
+      animation: modalIn 0.2s ease;
+    }
+    @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-title {
+      font-family: var(--ff-head); font-weight: 800; font-size: 1.2rem;
+      color: var(--text-dark); margin-bottom: 8px;
+    }
+    .modal-sub { font-size: 0.85rem; color: var(--text-light); margin-bottom: 24px; }
+    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; flex-wrap: wrap; }
+
+    /* =====================
+       RESPONSIVE
+    ===================== */
+    @media (min-width: 600px) {
+      .form-row { grid-template-columns: 1fr 1fr; }
+      .db-stats-row { grid-template-columns: repeat(3, 1fr); }
+      .schema-grid { grid-template-columns: 1fr 1fr; }
+    }
     @media (min-width: 768px) {
-      .hero-grid      { grid-template-columns: 1fr 1fr; }
-      .features-grid  { grid-template-columns: repeat(2, 1fr); }
-      .cards-grid     { grid-template-columns: repeat(2, 1fr); }
-      .stats-grid     { grid-template-columns: repeat(4, 1fr); }
-      .form-row       { grid-template-columns: 1fr 1fr; }
-      .contact-grid   { grid-template-columns: 1fr 1fr; }
-      .footer-top     { grid-template-columns: 2fr 1fr 1fr; }
-      .footer-bottom  { flex-direction: row; justify-content: space-between; }
+      .hero-grid { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr 1fr; }
+      .footer-top { grid-template-columns: 2fr 1fr 1fr; }
+      .hamburger { display: none !important; }
     }
-
-    /* =====================
-       DESKTOP  1024px
-    ===================== */
-    @media (min-width: 1024px) {
-      .section        { padding: 100px 0; }
-      .hero           { padding: 80px 0; }
-      .features-grid  { grid-template-columns: repeat(3, 1fr); }
-      .cards-grid     { grid-template-columns: repeat(3, 1fr); }
-      .nav-links      { display: flex !important; }
-      .hamburger      { display: none !important; }
-    }
-
-    /* =====================
-       MOBILE — hide desktop nav
-    ===================== */
-    @media (max-width: 1023px) {
-      .nav-links  { display: none; }
-      .hamburger  { display: flex; }
+    @media (max-width: 767px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
     }
 
   </style>
 </head>
 <body>
 
-  <a href="#main" class="skip-link">Skip to main content</a>
+<a href="#main" class="skip-link">Skip to main content</a>
 
-  <!-- HEADER -->
-  <header id="site-header">
-    <nav aria-label="Main navigation">
-      <a href="#" class="logo" aria-label="DigitalCraft home">
-        <span class="logo-dot" aria-hidden="true"></span>
-        DigitalCraft
-      </a>
-      <ul class="nav-links" role="list">
-        <li><a href="#features">Features</a></li>
-        <li><a href="#work">Work</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#contact" class="nav-cta">Get Started</a></li>
-      </ul>
-      <button class="hamburger" id="hamburger" aria-expanded="false" aria-controls="mobileNav" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-    </nav>
-    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
-      <a href="#features" class="mob-link">Features</a>
-      <a href="#work"     class="mob-link">Work</a>
-      <a href="#about"    class="mob-link">About</a>
-      <a href="#contact"  class="mob-link">Contact</a>
-      <a href="#contact"  class="mob-link">Get Started →</a>
-    </nav>
-  </header>
+<!-- HEADER -->
+<header id="site-header">
+  <nav aria-label="Main navigation">
+    <a href="#" class="logo" aria-label="DigitalCraft home">
+      <span class="logo-dot" aria-hidden="true"></span>
+      DigitalCraft
+    </a>
+    <div class="nav-links" role="list">
+      <a href="#schema" role="listitem">Schema</a>
+      <a href="#dashboard" role="listitem">Dashboard</a>
+      <a href="#contact" role="listitem">Contact</a>
+      <a href="#contact" class="nav-cta" role="listitem">Send Message</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileNav">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
 
-  <!-- MAIN -->
-  <main id="main">
+<nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+  <a href="#schema"    class="mob-link">Schema</a>
+  <a href="#dashboard" class="mob-link">Dashboard</a>
+  <a href="#contact"   class="mob-link">Contact</a>
+</nav>
 
-    <!-- HERO -->
-    <section class="hero" aria-labelledby="hero-h1">
-      <div class="wrap">
-        <div class="hero-grid">
-          <div>
-            <p class="hero-badge">
-              <span class="badge-dot" aria-hidden="true"></span>
-              DecodeLabs · 2026 Internship
-            </p>
-            <h1 class="hero-title" id="hero-h1">
-              Build the<br><span>Future.</span><br>One Pixel at a Time.
-            </h1>
-            <p class="hero-desc">
-              A responsive frontend interface crafted with semantic HTML5, CSS Grid, Flexbox, and vanilla JavaScript — engineered for every screen, every user, every device.
-            </p>
-            <div class="hero-actions">
-              <a href="#work" class="btn btn-primary">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                View My Work
-              </a>
-              <a href="#contact" class="btn btn-outline">Let's Connect</a>
-            </div>
-          </div>
-          <div>
-            <div class="hero-card" aria-hidden="true">
-              <div class="card-titlebar">
-                <span class="card-dot" style="background:#e88"></span>
-                <span class="card-dot" style="background:#ea4"></span>
-                <span class="card-dot" style="background:#8c8"></span>
-                <div class="card-bar"><div class="card-bar-fill" id="heroBar"></div></div>
-              </div>
-              <div class="stat-grid">
-                <div class="stat-box">
-                  <span class="stat-num" data-count="98">0</span>
-                  <span class="stat-label">Lighthouse Score</span>
-                </div>
-                <div class="stat-box">
-                  <span class="stat-num" data-count="6">0</span>
-                  <span class="stat-label">Sections Built</span>
-                </div>
-                <div class="stat-box">
-                  <span class="stat-num" data-count="3">0</span>
-                  <span class="stat-label">Breakpoints</span>
-                </div>
-                <div class="stat-box">
-                  <span class="stat-num" data-count="100">0</span>
-                  <span class="stat-label">% Responsive</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+<!-- MAIN -->
+<main id="main">
 
-    <!-- FEATURES -->
-    <section class="section features-bg" id="features" aria-labelledby="feat-h2">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="section-tag">What We Do</p>
-          <h2 class="section-title" id="feat-h2">Engineered for Excellence</h2>
-          <p class="section-sub">Every component follows the principles of the DecodeLabs Responsive Architecture — semantic, accessible, and adaptable.</p>
-        </div>
-        <div class="features-grid">
-          <article class="feat-card">
-            <div class="feat-icon icon-mocha" aria-hidden="true">🏗️</div>
-            <h3 class="feat-title">Semantic HTML5</h3>
-            <p class="feat-text">Proper landmark elements — header, nav, main, article, footer — giving screen readers and AI crawlers a meaningful table of contents.</p>
-          </article>
-          <article class="feat-card">
-            <div class="feat-icon icon-blue" aria-hidden="true">🎨</div>
-            <h3 class="feat-title">CSS Grid & Flexbox</h3>
-            <p class="feat-text">Macro layouts powered by CSS Grid. Micro components aligned with Flexbox. Mobile-first, expanding through 768px and 1024px breakpoints.</p>
-          </article>
-          <article class="feat-card">
-            <div class="feat-icon icon-grey" aria-hidden="true">⚙️</div>
-            <h3 class="feat-title">Vanilla JavaScript</h3>
-            <p class="feat-text">No frameworks, no dependencies. Pure JS handles navigation state, scroll events, form interactions, animations, and counter logic.</p>
-          </article>
-          <article class="feat-card">
-            <div class="feat-icon icon-mocha" aria-hidden="true">📱</div>
-            <h3 class="feat-title">Mobile-First Strategy</h3>
-            <p class="feat-text">Designed for the smallest screen first, then progressively enhanced using min-width media queries for tablet and desktop viewports.</p>
-          </article>
-          <article class="feat-card">
-            <div class="feat-icon icon-blue" aria-hidden="true">♿</div>
-            <h3 class="feat-title">WCAG Accessibility</h3>
-            <p class="feat-text">Skip links, ARIA labels, keyboard navigation, sufficient color contrast, and focus states — built for universal access from line one.</p>
-          </article>
-          <article class="feat-card">
-            <div class="feat-icon icon-grey" aria-hidden="true">✨</div>
-            <h3 class="feat-title">2025 Aesthetics</h3>
-            <p class="feat-text">Mocha Mousse, Ethereal Blue, and Moonlit Grey form a grounded, warm palette. Montserrat headlines, Roboto body — max 2 families, 3 weights.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- PORTFOLIO -->
-    <section class="section portfolio-bg" id="work" aria-labelledby="work-h2">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="section-tag">Portfolio</p>
-          <h2 class="section-title" id="work-h2">Recent Projects</h2>
-          <p class="section-sub">Each project is a milestone — a demonstration of responsive design thinking and frontend craft.</p>
-        </div>
-        <div class="cards-grid">
-          <article class="proj-card">
-            <div class="proj-thumb t1">🏠</div>
-            <div class="proj-body">
-              <p class="proj-tag">HTML · CSS</p>
-              <h3 class="proj-title">Responsive Landing Page</h3>
-              <p class="proj-excerpt">A marketing homepage with hero, features, pricing, and contact sections that adapt fluidly across all breakpoints.</p>
-              <div class="proj-footer">
-                <span class="proj-meta">Project 1 · 2026</span>
-                <a href="#" class="proj-link">View →</a>
-              </div>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="proj-thumb t2">📊</div>
-            <div class="proj-body">
-              <p class="proj-tag">HTML · CSS · JS</p>
-              <h3 class="proj-title">Interactive Dashboard UI</h3>
-              <p class="proj-excerpt">A data-rich dashboard with stat cards, progress bars, and toggleable sidebar — built entirely with vanilla JS state management.</p>
-              <div class="proj-footer">
-                <span class="proj-meta">Project 2 · 2026</span>
-                <a href="#" class="proj-link">View →</a>
-              </div>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="proj-thumb t3">🛍️</div>
-            <div class="proj-body">
-              <p class="proj-tag">HTML · CSS · JS</p>
-              <h3 class="proj-title">E-Commerce Product Grid</h3>
-              <p class="proj-excerpt">A filterable product catalog using CSS Grid and JavaScript — responsive columns, live search, and cart counter logic.</p>
-              <div class="proj-footer">
-                <span class="proj-meta">Project 3 · 2026</span>
-                <a href="#" class="proj-link">View →</a>
-              </div>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="proj-thumb t4">📰</div>
-            <div class="proj-body">
-              <p class="proj-tag">HTML · CSS</p>
-              <h3 class="proj-title">Magazine-Style Blog Layout</h3>
-              <p class="proj-excerpt">An editorial layout using CSS Grid named areas — asymmetric, visually rich, and fully readable on any screen width.</p>
-              <div class="proj-footer">
-                <span class="proj-meta">Side Project · 2026</span>
-                <a href="#" class="proj-link">View →</a>
-              </div>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="proj-thumb t5">🎯</div>
-            <div class="proj-body">
-              <p class="proj-tag">JS · CSS</p>
-              <h3 class="proj-title">Form Validation System</h3>
-              <p class="proj-excerpt">Real-time validation with ARIA live regions, error messaging, and success feedback — no external libraries required.</p>
-              <div class="proj-footer">
-                <span class="proj-meta">Component · 2026</span>
-                <a href="#" class="proj-link">View →</a>
-              </div>
-            </div>
-          </article>
-          <article class="proj-card">
-            <div class="proj-thumb t6">🌐</div>
-            <div class="proj-body">
-              <p class="proj-tag">HTML · CSS · JS</p>
-              <h3 class="proj-title">Portfolio Website</h3>
-              <p class="proj-excerpt">A personal portfolio with smooth scroll animations, dark/light toggle, and clean semantic structure.</p>
-              <div class="proj-footer">
-                <span class="proj-meta">Portfolio · 2026</span>
-                <a href="#" class="proj-link">View →</a>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- STATS -->
-    <section class="section stats-bg" id="about" aria-labelledby="stats-h2">
-      <div class="wrap">
-        <h2 class="stats-title" id="stats-h2">By the Numbers</h2>
-        <div class="stats-grid">
-          <div>
-            <span class="s-num" data-count="6">0</span>
-            <span class="s-label">Projects Completed</span>
-          </div>
-          <div>
-            <span class="s-num" data-count="1200">0</span>
-            <span class="s-label">Lines of Code</span>
-          </div>
-          <div>
-            <span class="s-num" data-count="3">0</span>
-            <span class="s-label">Responsive Breakpoints</span>
-          </div>
-          <div>
-            <span class="s-num" data-count="100">0</span>
-            <span class="s-label">% Frameworks-Free</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section class="section contact-bg" id="contact" aria-labelledby="contact-h2">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="section-tag">Get In Touch</p>
-          <h2 class="section-title" id="contact-h2">Let's Build Together</h2>
-          <p class="section-sub">Whether it's feedback, collaboration, or a new project — I'd love to hear from you.</p>
-        </div>
-        <div class="contact-grid">
-          <div>
-            <div class="info-item">
-              <div class="info-icon" aria-hidden="true">📧</div>
-              <div>
-                <p class="info-title">Email</p>
-                <p class="info-val">decodelabs.tech@gmail.com</p>
-              </div>
-            </div>
-            <div class="info-item">
-              <div class="info-icon" aria-hidden="true">📞</div>
-              <div>
-                <p class="info-title">Phone</p>
-                <p class="info-val">+91 89330 06408</p>
-              </div>
-            </div>
-            <div class="info-item">
-              <div class="info-icon" aria-hidden="true">📍</div>
-              <div>
-                <p class="info-title">Location</p>
-                <p class="info-val">Greater Lucknow, India</p>
-              </div>
-            </div>
-            <div class="info-item">
-              <div class="info-icon" aria-hidden="true">🌐</div>
-              <div>
-                <p class="info-title">Website</p>
-                <p class="info-val">www.decodelabs.tech</p>
-              </div>
-            </div>
-          </div>
-          <div>
-            <form class="form" id="contactForm" novalidate aria-label="Contact form">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label" for="fname">First Name</label>
-                  <input class="form-input" type="text" id="fname" placeholder="Your first name" required />
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="lname">Last Name</label>
-                  <input class="form-input" type="text" id="lname" placeholder="Your last name" required />
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="email">Email Address</label>
-                <input class="form-input" type="email" id="email" placeholder="you@example.com" required />
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="subject">Subject</label>
-                <select class="form-select" id="subject">
-                  <option value="">Select a topic…</option>
-                  <option>Project Collaboration</option>
-                  <option>Feedback</option>
-                  <option>Internship Inquiry</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="message">Message</label>
-                <textarea class="form-textarea" id="message" placeholder="Tell me what's on your mind…" required></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary" style="align-self:flex-start">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-                Send Message
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- FOOTER -->
-  <footer>
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-h1">
     <div class="wrap">
-      <div class="footer-top">
+      <div class="hero-grid">
         <div>
-          <p class="footer-brand-name">DigitalCraft</p>
-          <p class="footer-brand-desc">A responsive frontend interface built with HTML5, CSS3, and Vanilla JS for the DecodeLabs Full Stack Internship 2026.</p>
+          <div class="project-badge">PROJECT 3 · DATABASE INTEGRATION</div>
+          <div class="hero-badge">
+            <span class="badge-dot" aria-hidden="true"></span>
+            DecodeLabs · Batch 2026
+          </div>
+          <h1 class="hero-title" id="hero-h1">
+            Data That <span>Persists</span><br>Beyond Memory
+          </h1>
+          <p class="hero-desc">
+            Project 3 upgrades the DigitalCraft backend with a real SQLite database — replacing the in-memory store with permanent, queryable, relational data storage.
+          </p>
+          <div class="hero-actions">
+            <a href="#dashboard" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              View Dashboard
+            </a>
+            <a href="#schema" class="btn btn-outline">View Schema</a>
+          </div>
         </div>
-        <nav class="footer-col" aria-label="Footer pages">
-          <p class="footer-col-title">Pages</p>
-          <ul>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#work">Work</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </nav>
-        <nav class="footer-col" aria-label="Tech stack">
-          <p class="footer-col-title">Stack</p>
-          <ul>
-            <li><a href="#">HTML5</a></li>
-            <li><a href="#">CSS Grid</a></li>
-            <li><a href="#">Flexbox</a></li>
-            <li><a href="#">Vanilla JS</a></li>
-          </ul>
-        </nav>
-      </div>
-      <div class="footer-bottom">
-        <p>© 2026 DigitalCraft · DecodeLabs Project 1</p>
-        <p>No Frameworks. Pure Craft.</p>
+        <!-- Terminal Card -->
+        <div class="hero-card" aria-label="Database terminal preview">
+          <div class="card-titlebar">
+            <div class="card-dot" style="background:#e53935"></div>
+            <div class="card-dot" style="background:#f59e0b"></div>
+            <div class="card-dot" style="background:#4caf50"></div>
+            <span class="card-title-text">digitalcraft.db — SQLite</span>
+          </div>
+          <div aria-hidden="true">
+            <div class="terminal-line"><span class="t-prompt">$</span> <span class="t-cmd">python app.py</span></div>
+            <div class="terminal-line"><span class="t-out">  ✓ Database initialised</span></div>
+            <div class="terminal-line"><span class="t-out">  ✓ Running at :5000</span></div>
+            <div class="terminal-line" style="margin-top:10px"><span class="t-prompt">&gt;&gt;&gt;</span> <span class="t-kw">SELECT</span> <span class="t-cmd">*</span> <span class="t-kw">FROM</span> <span class="t-str">messages</span><span class="t-cmd">;</span></div>
+            <div class="terminal-line"><span class="t-out">id           │ first_name  │ email</span></div>
+            <div class="terminal-line"><span class="t-out">─────────────┼─────────────┼──────────────</span></div>
+            <div class="terminal-line"><span class="t-str">a1b2-c3d4…  </span><span class="t-out"> │ Merna       │ merna@…</span></div>
+            <div class="terminal-line"><span class="t-str">e5f6-g7h8…  </span><span class="t-out"> │ Ali         │ ali@…</span></div>
+            <div class="terminal-line" style="margin-top:10px"><span class="t-cmt">-- 2 rows returned  ⚡ 0.4ms</span></div>
+            <div class="terminal-line"><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+          </div>
+        </div>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <button class="scroll-top" id="scrollTop" aria-label="Back to top">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
-  </button>
+  <!-- SCHEMA SECTION -->
+  <section class="section schema-bg" id="schema" aria-labelledby="schema-h2">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-tag">Pillar 1 — The Blueprint</p>
+        <h2 class="section-title" id="schema-h2">Database Schema Design</h2>
+        <p class="section-sub">Two tables power the system. Each column is typed and constrained directly at the schema level — the database is the final source of truth.</p>
+      </div>
+      <div class="schema-grid">
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        <!-- Messages table -->
+        <div class="schema-table">
+          <div class="schema-table-head">
+            <span class="schema-table-icon">💬</span>
+            <span class="schema-table-name">messages</span>
+          </div>
+          <div class="schema-fields">
+            <div class="schema-field">
+              <span class="field-name">id</span>
+              <span class="field-type">TEXT</span>
+              <span class="field-constraint c-pk">PRIMARY KEY</span>
+            </div>
+            <div class="schema-field">
+              <span class="field-name">first_name</span>
+              <span class="field-type">TEXT</span>
+              <span class="field-constraint c-chk">CHECK ≥ 2</span>
+            </div>
+            <div class="schema-field">
+              <span class="field-name">last_name</span>
+              <span class="field-type">TEXT</span>
+              <span class="field-constraint c-nn">NOT NULL</span>
+            </div>
+            <div class="schema-field">
+              <span class="field-name">email</span>
+              <span class="field-type">TEXT</span>
+              <span class="field-constraint c-nn">NOT NULL</span>
+            </div>
+            <div class="schema-field">
+              <span class="field-name">subject</span>
+              <span class="field-type">TEXT</span>
+              <span class="field-constraint c-opt">DEFAULT 'General'</span>
+            </div>
+            <div class="schema-field">
+              <span class="field-name">message</span>
+              <span class="field-type">TEXT</span>
+              <span class="field-constraint c-chk">CHECK ≥ 10</span>
+            </div>
+            <div class="schema-field">
+              <span class="field-name">submitted_at</span>
+              <span class="field-type">TEXT</span>
+              <span class="field-constraint c-nn">NOT NULL</span>
+            </div>
+          </div>
+        </div>
 
-  <script>
-    // Header scroll shadow
-    const hdr = document.getElementById('site-header');
-    window.addEventListener('scroll', () => {
-      hdr.classList.toggle('scrolled', window.scrollY > 10);
-    }, { passive: true });
+        <!-- Subscribers table -->
+        <div class="schema-table">
+          <div class="schema-table-head" style="background:var(--mocha-dark)">
+            <span class="schema-table-icon">📧</span>
+            <span class="schema-table-name">subscribers</span>
+          </div>
+          <div class="schema-fields">
+            <div class="schema-field">
+              <span class="field-name">id</span>
+              <span class="field-type">TEXT</span>
+              <span class="field-constraint c-pk">PRIMARY KEY</span>
+            </div>
+            <div class="schema-field">
+              <span class="field-name">email</span>
+              <span class="field-type">TEXT</span>
+              <span class="field-constraint c-uq">UNIQUE</span>
+            </div>
+            <div class="schema-field">
+              <span class="field-name">subscribed_at</span>
+              <span class="field-type">TEXT</span>
+              <span class="field-constraint c-nn">NOT NULL</span>
+            </div>
+          </div>
+          <!-- CRUD Map -->
+          <div style="padding: 20px; border-top: 1px solid var(--grey-dark); background: var(--grey);">
+            <p style="font-family:var(--ff-head);font-size:0.75rem;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">CRUD → HTTP Mapping</p>
+            <div style="display:flex;flex-direction:column;gap:8px;font-family:var(--ff-mono);font-size:0.75rem;">
+              <div style="display:flex;gap:10px;align-items:center"><span style="color:#388e3c;font-weight:700">CREATE</span><span style="color:var(--text-light)">→</span><span style="color:var(--mocha)">POST /api/contact</span></div>
+              <div style="display:flex;gap:10px;align-items:center"><span style="color:#0e7490;font-weight:700">READ</span><span style="color:var(--text-light)">→</span><span style="color:var(--mocha)">GET  /api/messages</span></div>
+              <div style="display:flex;gap:10px;align-items:center"><span style="color:#d97706;font-weight:700">UPDATE</span><span style="color:var(--text-light)">→</span><span style="color:var(--mocha)">PUT  /api/messages/:id</span></div>
+              <div style="display:flex;gap:10px;align-items:center"><span style="color:#dc2626;font-weight:700">DELETE</span><span style="color:var(--text-light)">→</span><span style="color:var(--mocha)">DEL  /api/messages/:id</span></div>
+            </div>
+          </div>
+        </div>
 
-    // Hamburger
-    const ham = document.getElementById('hamburger');
-    const mob = document.getElementById('mobileNav');
-    ham.addEventListener('click', () => {
-      const open = mob.classList.toggle('open');
-      ham.classList.toggle('open', open);
-      ham.setAttribute('aria-expanded', String(open));
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE DASHBOARD -->
+  <section class="section dashboard-bg" id="dashboard" aria-labelledby="dashboard-h2">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-tag">Pillar 3 — The Action</p>
+        <h2 class="section-title" id="dashboard-h2">Live Database Dashboard</h2>
+        <p class="section-sub">All messages are now persisted to SQLite. This panel reads directly from the database in real time — create, view, and delete records below.</p>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="db-stats-row" id="dbStatsRow">
+        <div class="db-stat-card">
+          <div class="db-stat-icon icon-green">💾</div>
+          <div>
+            <div class="db-stat-num" id="statMessages">—</div>
+            <div class="db-stat-label">Messages in DB</div>
+          </div>
+        </div>
+        <div class="db-stat-card">
+          <div class="db-stat-icon icon-mocha">📧</div>
+          <div>
+            <div class="db-stat-num" id="statSubscribers">—</div>
+            <div class="db-stat-label">Subscribers</div>
+          </div>
+        </div>
+        <div class="db-stat-card">
+          <div class="db-stat-icon icon-blue">🔗</div>
+          <div>
+            <div class="db-stat-num" id="statStatus" style="font-size:1rem;padding-top:4px">Checking…</div>
+            <div class="db-stat-label">API Status</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Table Panel -->
+      <div class="messages-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            💬 messages table
+            <span class="db-badge" id="rowCountBadge">0 rows</span>
+          </div>
+          <button class="btn btn-outline" id="refreshBtn" onclick="loadMessages()" style="padding:8px 18px;font-size:0.82rem">
+            ↻ Refresh
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table aria-label="Database messages">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Subject</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="messagesBody">
+              <tr><td colspan="6" class="loading-state">Loading from database…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS COUNTERS -->
+  <section class="section stats-bg" id="about" aria-labelledby="stats-h2">
+    <div class="wrap">
+      <h2 class="stats-title" id="stats-h2">Project Progress</h2>
+      <div class="stats-grid">
+        <div>
+          <span class="s-num" data-count="3">0</span>
+          <span class="s-label">Projects Completed</span>
+        </div>
+        <div>
+          <span class="s-num" data-count="2">0</span>
+          <span class="s-label">DB Tables Designed</span>
+        </div>
+        <div>
+          <span class="s-num" data-count="7">0</span>
+          <span class="s-label">API Endpoints</span>
+        </div>
+        <div>
+          <span class="s-num" data-count="100">0</span>
+          <span class="s-label">% Data Persistent</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section contact-bg" id="contact" aria-labelledby="contact-h2">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-tag">Pillar 2 — The Bridge</p>
+        <h2 class="section-title" id="contact-h2">Send a Message → Save to DB</h2>
+        <p class="section-sub">This form now POSTs to the Flask API which validates and INSERTs into SQLite. Check the dashboard above after submitting!</p>
+      </div>
+      <div class="contact-grid">
+        <div>
+          <div class="info-item">
+            <div class="info-icon" aria-hidden="true">📧</div>
+            <div>
+              <p class="info-title">Email</p>
+              <p class="info-val">decodelabs.tech@gmail.com</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon" aria-hidden="true">📞</div>
+            <div>
+              <p class="info-title">Phone</p>
+              <p class="info-val">+91 89330 06408</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon" aria-hidden="true">📍</div>
+            <div>
+              <p class="info-title">Location</p>
+              <p class="info-val">Greater Lucknow, India</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon" aria-hidden="true">💾</div>
+            <div>
+              <p class="info-title">Database</p>
+              <p class="info-val">SQLite · digitalcraft.db</p>
+            </div>
+          </div>
+          <!-- Subscribe box -->
+          <div style="margin-top:32px;padding:20px;background:var(--grey);border-radius:16px;border:1px solid var(--grey-dark)">
+            <p style="font-family:var(--ff-head);font-weight:700;font-size:0.9rem;color:var(--text-dark);margin-bottom:8px">📬 Subscribe</p>
+            <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:14px">Emails are stored with UNIQUE constraint — no duplicates!</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <input type="email" id="subEmail" placeholder="you@example.com" class="form-input" style="flex:1;min-width:160px" />
+              <button class="btn btn-primary" onclick="handleSubscribe()" style="padding:11px 20px;font-size:0.85rem">Subscribe</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <form class="form" id="contactForm" novalidate aria-label="Contact form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="fname">First Name</label>
+                <input class="form-input" type="text" id="fname" placeholder="Your first name" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="lname">Last Name</label>
+                <input class="form-input" type="text" id="lname" placeholder="Your last name" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address</label>
+              <input class="form-input" type="email" id="email" placeholder="you@example.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="subject">Subject</label>
+              <select class="form-select" id="subject">
+                <option value="">Select a topic…</option>
+                <option>Project Collaboration</option>
+                <option>Feedback</option>
+                <option>Internship Inquiry</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="message">Message</label>
+              <textarea class="form-textarea" id="message" placeholder="Tell me what's on your mind…" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="align-self:flex-start">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              Send &amp; Save to DB
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <p class="footer-brand-name">DigitalCraft</p>
+        <p class="footer-brand-desc">A full stack portfolio with SQLite database integration. DecodeLabs Full Stack Internship 2026 — Project 3.</p>
+      </div>
+      <nav class="footer-col" aria-label="Footer pages">
+        <p class="footer-col-title">Navigate</p>
+        <ul>
+          <li><a href="#schema">Schema</a></li>
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Tech stack">
+        <p class="footer-col-title">Stack</p>
+        <ul>
+          <li><a href="#">Python Flask</a></li>
+          <li><a href="#">SQLite</a></li>
+          <li><a href="#">REST API</a></li>
+          <li><a href="#">Vanilla JS</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 DigitalCraft · DecodeLabs Project 3</p>
+      <p>Data Persists. Memory Doesn't.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- SCROLL TOP -->
+<button class="scroll-top" id="scrollTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+  <div class="modal">
+    <h3 class="modal-title" id="deleteModalTitle">Delete Message</h3>
+    <p class="modal-sub" id="deleteModalSub">This will permanently remove the record from the database. This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeDeleteModal()" style="padding:10px 20px">Cancel</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn" style="padding:10px 20px">Delete from DB</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── CONFIG ─────────────────────────────────────────────
+  const API_BASE = 'http://127.0.0.1:5000/api';
+
+  // ── TOAST ──────────────────────────────────────────────
+  const toastEl = document.getElementById('toast');
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    setTimeout(() => toastEl.classList.remove('show'), 3500);
+  }
+
+  // ── HEADER SCROLL ──────────────────────────────────────
+  const hdr = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    hdr.classList.toggle('scrolled', window.scrollY > 10);
+  }, { passive: true });
+
+  // ── HAMBURGER ──────────────────────────────────────────
+  const ham = document.getElementById('hamburger');
+  const mob = document.getElementById('mobileNav');
+  ham.addEventListener('click', () => {
+    const open = mob.classList.toggle('open');
+    ham.classList.toggle('open', open);
+    ham.setAttribute('aria-expanded', String(open));
+  });
+  document.querySelectorAll('.mob-link').forEach(a =>
+    a.addEventListener('click', () => {
+      mob.classList.remove('open');
+      ham.classList.remove('open');
+      ham.setAttribute('aria-expanded', 'false');
+    })
+  );
+
+  // ── SCROLL TOP ─────────────────────────────────────────
+  const stb = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    stb.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+  stb.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // ── COUNTERS ───────────────────────────────────────────
+  function animCount(el, target, duration) {
+    let start = null;
+    const run = ts => {
+      if (!start) start = ts;
+      const prog = Math.min((ts - start) / duration, 1);
+      el.textContent = Math.floor((1 - Math.pow(1 - prog, 3)) * target);
+      if (prog < 1) requestAnimationFrame(run);
+      else el.textContent = target;
+    };
+    requestAnimationFrame(run);
+  }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { animCount(e.target, +e.target.dataset.count, 1500); io.unobserve(e.target); }
     });
-    document.querySelectorAll('.mob-link').forEach(a => {
-      a.addEventListener('click', () => {
-        mob.classList.remove('open');
-        ham.classList.remove('open');
-        ham.setAttribute('aria-expanded', 'false');
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-count]').forEach(el => io.observe(el));
+
+  // ── API HEALTH CHECK ───────────────────────────────────
+  const indicator = document.createElement('span');
+  indicator.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#aaa;display:inline-block;margin-left:6px;vertical-align:middle;cursor:default;transition:background 0.3s;';
+  indicator.title = 'Checking API…';
+  document.querySelector('.logo').appendChild(indicator);
+
+  async function checkHealth() {
+    try {
+      const res  = await fetch(`${API_BASE}/health`);
+      const data = await res.json();
+      if (data.status === 'ok') {
+        indicator.style.background = '#4caf50';
+        indicator.title = `API Online · DB: ${data.database}`;
+        document.getElementById('statStatus').textContent = '🟢 Online';
+        document.getElementById('statStatus').style.color = '#388e3c';
+      }
+    } catch {
+      indicator.style.background = '#e53935';
+      indicator.title = 'API Offline — start app.py first';
+      document.getElementById('statStatus').textContent = '🔴 Offline';
+      document.getElementById('statStatus').style.color = '#e53935';
+    }
+  }
+
+  // ── LOAD STATS ─────────────────────────────────────────
+  async function loadStats() {
+    try {
+      const res  = await fetch(`${API_BASE}/stats`);
+      const data = await res.json();
+      if (data.status === 'success') {
+        document.getElementById('statMessages').textContent    = data.stats.total_messages;
+        document.getElementById('statSubscribers').textContent = data.stats.total_subscribers;
+      }
+    } catch { /* silently handled by offline state */ }
+  }
+
+  // ── LOAD MESSAGES ──────────────────────────────────────
+  async function loadMessages() {
+    const tbody = document.getElementById('messagesBody');
+    tbody.innerHTML = '<tr><td colspan="6" class="loading-state">Loading from database…</td></tr>';
+    try {
+      const res  = await fetch(`${API_BASE}/messages`);
+      const data = await res.json();
+      document.getElementById('rowCountBadge').textContent = `${data.count} row${data.count !== 1 ? 's' : ''}`;
+
+      if (!data.messages || data.messages.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6">
+          <div class="empty-state">
+            <div class="empty-state-icon">💾</div>
+            <p class="empty-state-text">No messages yet. Submit the contact form below to add the first row!</p>
+          </div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.messages.map(m => {
+        const date = new Date(m.submitted_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+        const shortId = m.id.substring(0, 8) + '…';
+        return `<tr>
+          <td class="td-id" title="${m.id}">${shortId}</td>
+          <td class="td-name">${escHtml(m.first_name)} ${escHtml(m.last_name)}</td>
+          <td class="td-email">${escHtml(m.email)}</td>
+          <td><span class="td-subject">${escHtml(m.subject)}</span></td>
+          <td class="td-date">${date}</td>
+          <td class="td-actions">
+            <button class="btn btn-danger" onclick="openDeleteModal('${m.id}', '${escHtml(m.first_name)} ${escHtml(m.last_name)}')">Delete</button>
+          </td>
+        </tr>`;
+      }).join('');
+    } catch {
+      tbody.innerHTML = `<tr><td colspan="6" class="loading-state">⚠️ Cannot connect to API. Is app.py running?</td></tr>`;
+    }
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── DELETE MODAL ───────────────────────────────────────
+  let pendingDeleteId = null;
+  function openDeleteModal(id, name) {
+    pendingDeleteId = id;
+    document.getElementById('deleteModalSub').textContent =
+      `This will permanently DELETE the message from ${name} from the database. Cannot be undone.`;
+    document.getElementById('deleteModal').classList.add('open');
+  }
+  function closeDeleteModal() {
+    pendingDeleteId = null;
+    document.getElementById('deleteModal').classList.remove('open');
+  }
+  document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    if (!pendingDeleteId) return;
+    try {
+      const res = await fetch(`${API_BASE}/messages/${pendingDeleteId}`, { method: 'DELETE' });
+      if (res.status === 204) {
+        showToast('✅ Record deleted from database.');
+        closeDeleteModal();
+        loadMessages();
+        loadStats();
+      } else {
+        showToast('❌ Delete failed. Try again.');
+        closeDeleteModal();
+      }
+    } catch {
+      showToast('❌ Network error during delete.');
+      closeDeleteModal();
+    }
+  });
+  document.getElementById('deleteModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeDeleteModal();
+  });
+
+  // ── CONTACT FORM ───────────────────────────────────────
+  const form = document.getElementById('contactForm');
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const origBtnHTML = submitBtn.innerHTML;
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const payload = {
+      first_name: form.fname.value.trim(),
+      last_name:  form.lname.value.trim(),
+      email:      form.email.value.trim(),
+      subject:    form.subject.value.trim(),
+      message:    form.message.value.trim()
+    };
+    if (!payload.first_name || !payload.last_name) return showToast('⚠️ Please enter your full name.');
+    if (!payload.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) return showToast('⚠️ Valid email required.');
+    if (!payload.message || payload.message.length < 10) return showToast('⚠️ Message must be at least 10 characters.');
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving to DB…';
+
+    try {
+      const res  = await fetch(`${API_BASE}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-    });
-
-    // Scroll-to-top
-    const stb = document.getElementById('scrollTop');
-    window.addEventListener('scroll', () => {
-      stb.classList.toggle('visible', window.scrollY > 400);
-    }, { passive: true });
-    stb.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-    // Counters
-    function animCount(el, target, duration) {
-      let start = null;
-      const run = ts => {
-        if (!start) start = ts;
-        const prog = Math.min((ts - start) / duration, 1);
-        const val = Math.floor((1 - Math.pow(1 - prog, 3)) * target);
-        el.textContent = val;
-        if (prog < 1) requestAnimationFrame(run);
-        else el.textContent = target;
-      };
-      requestAnimationFrame(run);
+      const data = await res.json();
+      if (res.status === 201) {
+        form.reset();
+        showToast('✅ Message saved to database!');
+        setTimeout(() => { loadMessages(); loadStats(); }, 500);
+      } else if (res.status === 400) {
+        showToast('⚠️ ' + (data.errors ? data.errors.join(' | ') : data.message));
+      } else {
+        showToast('❌ Server error (' + res.status + ').');
+      }
+    } catch {
+      showToast('❌ Cannot reach API. Is app.py running?');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origBtnHTML;
     }
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          animCount(e.target, +e.target.dataset.count, 1500);
-          io.unobserve(e.target);
-        }
+  });
+
+  // ── SUBSCRIBE ──────────────────────────────────────────
+  async function handleSubscribe() {
+    const email = document.getElementById('subEmail').value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showToast('⚠️ Valid email required.');
+    try {
+      const res  = await fetch(`${API_BASE}/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
       });
-    }, { threshold: 0.5 });
-    document.querySelectorAll('[data-count]').forEach(el => io.observe(el));
-
-    // Hero bar
-    window.addEventListener('load', () => {
-      setTimeout(() => { document.getElementById('heroBar').style.width = '78%'; }, 500);
-    });
-
-    // Toast helper
-    const toast = document.getElementById('toast');
-    function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3500);
+      const data = await res.json();
+      if (res.status === 201) {
+        document.getElementById('subEmail').value = '';
+        showToast('✅ Subscribed! Email saved with UNIQUE constraint.');
+        loadStats();
+      } else if (res.status === 409) {
+        showToast('⚠️ This email is already subscribed (UNIQUE violated).');
+      } else {
+        showToast('⚠️ ' + data.message);
+      }
+    } catch {
+      showToast('❌ Cannot reach API. Is app.py running?');
     }
+  }
 
-    // ── API CONFIG ──────────────────────────────────
-    const API_BASE = 'http://127.0.0.1:5000/api';
-
-    // ── API STATUS INDICATOR ─────────────────────────
-    // Shows a small dot in the nav indicating if the Flask server is reachable
-    async function checkApiHealth() {
-      try {
-        const res = await fetch(`${API_BASE}/health`);
-        const data = await res.json();
-        if (data.status === 'ok') {
-          indicator.style.background = '#4caf50';
-          indicator.title = 'API Online: ' + data.message;
-        }
-      } catch {
-        indicator.style.background = '#e53935';
-        indicator.title = 'API Offline — start app.py first';
-      }
-    }
-
-    // Inject the status dot next to the logo
-    const indicator = document.createElement('span');
-    indicator.style.cssText = `
-      width:8px; height:8px; border-radius:50%;
-      background:#aaa; display:inline-block;
-      margin-left:6px; vertical-align:middle;
-      cursor:default; transition:background 0.3s;
-    `;
-    indicator.title = 'Checking API…';
-    document.querySelector('.logo').appendChild(indicator);
-    checkApiHealth();
-
-    // ── CONTACT FORM → POST /api/contact ────────────
-    const form = document.getElementById('contactForm');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalBtnHTML = submitBtn.innerHTML;
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const payload = {
-        first_name: form.fname.value.trim(),
-        last_name:  form.lname.value.trim(),
-        email:      form.email.value.trim(),
-        subject:    form.subject.value.trim(),
-        message:    form.message.value.trim()
-      };
-
-      // Client-side pre-check before hitting the server
-      if (!payload.first_name || !payload.last_name) {
-        return showToast('⚠️ Please enter your full name.');
-      }
-      if (!payload.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
-        return showToast('⚠️ Please enter a valid email address.');
-      }
-      if (!payload.message) {
-        return showToast('⚠️ Please write a message.');
-      }
-
-      // Disable button and show loading state
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Sending…';
-
-      try {
-        // ── POST /api/contact ──────────────────────
-        const response = await fetch(`${API_BASE}/contact`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-
-        if (response.status === 201) {
-          // 201 Created — success
-          form.reset();
-          showToast('✅ Message sent! We\'ll be in touch soon.');
-          console.log('Message stored:', result.data);
-
-        } else if (response.status === 400) {
-          // 400 Bad Request — server-side validation failed
-          const errorList = result.errors ? result.errors.join(' | ') : result.message;
-          showToast('⚠️ ' + errorList);
-
-        } else {
-          // Other unexpected status
-          showToast('❌ Server error (' + response.status + '). Try again.');
-        }
-
-      } catch (networkError) {
-        // Network error — Flask server probably not running
-        showToast('❌ Cannot reach the API. Is app.py running?');
-        console.error('Network error:', networkError);
-      } finally {
-        // Always re-enable the button
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnHTML;
-      }
-    });
-  </script>
+  // ── INIT ───────────────────────────────────────────────
+  window.addEventListener('load', () => {
+    checkHealth();
+    loadMessages();
+    loadStats();
+  });
+</script>
 </body>
 </html>

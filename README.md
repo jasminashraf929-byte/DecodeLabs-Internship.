@@ -1,11 +1,23 @@
-# Project 2 — Backend API Development
+# Project 3 — Database Integration
 **DecodeLabs Full Stack Internship | Batch 2026**
 
 ---
 
 ## Overview
 
-A RESTful backend API built with Python Flask that powers the contact form from Project 1. The frontend (`index.html`) is fully integrated — form submissions hit the real Flask server, which validates input, stores messages in memory, and returns proper JSON responses with correct HTTP status codes.
+Project 3 upgrades the DigitalCraft backend from in-memory storage (Project 2) to a **real SQLite database**. Every contact form submission is now permanently persisted, queryable, and survives server restarts. The frontend gains a **live database dashboard** with real-time CRUD operations.
+
+---
+
+## What Changed From Project 2
+
+| Feature | Project 2 | Project 3 |
+|---------|-----------|-----------|
+| Storage | In-memory list (lost on restart) | SQLite database (permanent) |
+| Schema | None | Typed columns + constraints |
+| CRUD | Create, Read, Delete | **Full CRUD** (+ Update/PUT) |
+| Endpoints | 5 | **7** (+ PUT, subscribe, stats) |
+| Frontend | Contact form only | + Live dashboard, DB stats |
 
 ---
 
@@ -16,57 +28,58 @@ A RESTful backend API built with Python Flask that powers the contact form from 
 | Python 3 | Backend runtime |
 | Flask | Web framework |
 | Flask-CORS | Cross-origin request handling |
-| JSON | Data exchange format |
+| **SQLite** | Persistent relational database |
+| **sqlite3** | Python's built-in DB driver |
 | UUID | Unique message IDs |
+
+---
+
+## Database Schema
+
+### `messages` table
+| Column | Type | Constraint |
+|--------|------|------------|
+| id | TEXT | PRIMARY KEY |
+| first_name | TEXT | NOT NULL, CHECK(len ≥ 2) |
+| last_name | TEXT | NOT NULL, CHECK(len ≥ 2) |
+| email | TEXT | NOT NULL |
+| subject | TEXT | DEFAULT 'General' |
+| message | TEXT | NOT NULL, CHECK(len ≥ 10) |
+| submitted_at | TEXT | NOT NULL |
+
+### `subscribers` table
+| Column | Type | Constraint |
+|--------|------|------------|
+| id | TEXT | PRIMARY KEY |
+| email | TEXT | NOT NULL, **UNIQUE** |
+| subscribed_at | TEXT | NOT NULL |
 
 ---
 
 ## API Endpoints
 
-| Method | Endpoint | Description | Success Code |
-|--------|----------|-------------|--------------|
-| GET | `/api/health` | Server health check | 200 |
-| GET | `/api/messages` | Retrieve all messages | 200 |
-| GET | `/api/messages/<id>` | Retrieve one message by ID | 200 |
-| POST | `/api/contact` | Submit a contact message | 201 |
-| DELETE | `/api/messages/<id>` | Delete a message by ID | 204 |
-
----
-
-## HTTP Status Codes Used
-
-| Code | Meaning | When Returned |
-|------|---------|---------------|
-| 200 | OK | Successful GET request |
-| 201 | Created | Message successfully saved |
-| 204 | No Content | Message successfully deleted |
-| 400 | Bad Request | Validation failed |
-| 404 | Not Found | Message ID does not exist |
-| 405 | Method Not Allowed | Wrong HTTP method used |
-| 500 | Internal Server Error | Unexpected server error |
-
----
-
-## Validation Rules (The Gatekeeper)
-
-| Field | Rules |
-|-------|-------|
-| `first_name` | Required, minimum 2 characters |
-| `last_name` | Required, minimum 2 characters |
-| `email` | Required, valid email format |
-| `message` | Required, minimum 10 characters |
-| `subject` | Optional |
+| Method | Endpoint | Description | Code |
+|--------|----------|-------------|------|
+| GET | `/api/health` | Health check (includes DB status) | 200 |
+| GET | `/api/messages` | Retrieve all messages from DB | 200 |
+| GET | `/api/messages/<id>` | Retrieve one message | 200/404 |
+| POST | `/api/contact` | Submit + INSERT into DB | 201/400 |
+| **PUT** | `/api/messages/<id>` | **Update subject/message** | 200/404 |
+| DELETE | `/api/messages/<id>` | DELETE from DB | 204/404 |
+| GET | `/api/stats` | DB row counts + metadata | 200 |
+| POST | `/api/subscribe` | Add email (UNIQUE enforced) | 201/409 |
 
 ---
 
 ## File Structure
 
 ```
-project2/
-├── app.py            ← Flask backend — all API logic
-├── index.html        ← Project 1 frontend integrated with real API
+project3/
+├── app.py            ← Flask backend with SQLite integration
+├── index.html        ← Upgraded frontend with live DB dashboard
 ├── requirements.txt  ← Python dependencies
-└── README.md         ← This file
+├── README.md         ← This file
+└── digitalcraft.db   ← SQLite database (auto-created on first run)
 ```
 
 ---
@@ -82,105 +95,38 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
-Server runs at: **http://127.0.0.1:5000**
+The database file `digitalcraft.db` is created automatically on first run.
 
 ### Step 3 — Open the frontend
-Open `index.html` in your browser. The dot next to the logo turns **green** when the API is connected.
-
----
-
-## API Request & Response Examples
-
-### POST /api/contact — Success (201)
-**Request:**
-```json
-{
-  "first_name": "Merna",
-  "last_name": "Ashraf",
-  "email": "merna@example.com",
-  "subject": "Feedback",
-  "message": "Great internship project!"
-}
-```
-**Response:**
-```json
-{
-  "status": "success",
-  "message": "Your message has been received. We will get back to you soon!",
-  "data": {
-    "id": "a1b2c3d4-...",
-    "first_name": "Merna",
-    "last_name": "Ashraf",
-    "email": "merna@example.com",
-    "subject": "Feedback",
-    "message": "Great internship project!",
-    "submitted_at": "2026-05-21T12:00:00Z"
-  }
-}
-```
-
-### POST /api/contact — Validation Error (400)
-**Response:**
-```json
-{
-  "status": "error",
-  "message": "Validation failed. Please fix the errors below.",
-  "errors": [
-    "'email' must be a valid email address.",
-    "'message' must be at least 10 characters."
-  ]
-}
-```
-
-### GET /api/health — Response (200)
-```json
-{
-  "status": "ok",
-  "message": "DigitalCraft API is running.",
-  "timestamp": "2026-05-21T12:00:00Z",
-  "version": "1.0.0"
-}
-```
-
----
-
-## Testing with curl
-
-```bash
-# Health check
-curl http://127.0.0.1:5000/api/health
-
-# Submit a contact message
-curl -X POST http://127.0.0.1:5000/api/contact \
-  -H "Content-Type: application/json" \
-  -d '{"first_name":"Merna","last_name":"Ashraf","email":"merna@example.com","subject":"Feedback","message":"Great internship project!"}'
-
-# Get all messages
-curl http://127.0.0.1:5000/api/messages
-
-# Get one message by ID
-curl http://127.0.0.1:5000/api/messages/<id>
-
-# Delete a message
-curl -X DELETE http://127.0.0.1:5000/api/messages/<id>
-```
+Open `index.html` in your browser. The green dot confirms the API + DB are connected.
 
 ---
 
 ## Key Requirements Met
 
-- [x] GET endpoints implemented (`/health`, `/messages`, `/messages/<id>`)
-- [x] POST endpoint implemented (`/contact`)
-- [x] User input handled and parsed from JSON body
-- [x] Basic data validation with descriptive error messages
-- [x] Correct HTTP status codes returned
-- [x] JSON responses throughout
-- [x] CORS enabled for frontend integration
-- [x] Connected to Project 1 frontend via `fetch()`
+- [x] Database schema designed (2 tables with proper constraints)
+- [x] Full CRUD operations implemented (Create, Read, Update, Delete)
+- [x] SQLite used via Python's built-in `sqlite3` driver (no ORM)
+- [x] Parameterized queries (SQL injection protected)
+- [x] Schema-level integrity: NOT NULL, CHECK, UNIQUE, PRIMARY KEY
+- [x] FOREIGN_KEYS pragma enabled
+- [x] Data persists across server restarts
+- [x] Live frontend dashboard reads from database in real time
+- [x] DB health status shown in `/api/health` response
 
 ---
 
+## Security: Parameterized Queries
 
+All SQL uses `?` placeholders — user input is **never** concatenated:
+
+```python
+# ✅ Safe — parameterized
+conn.execute("SELECT * FROM messages WHERE id = ?", (message_id,))
+
+# ❌ Vulnerable — never do this
+conn.execute(f"SELECT * FROM messages WHERE id = '{message_id}'")
+```
 
 ---
 
